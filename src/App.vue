@@ -19,13 +19,18 @@
 </script>
 
 <style scoped>
+    body {
+        margin: 0;
+        overflow: hidden;
+    }
+
     .bar {
         position: fixed;
         z-index: 100;
         width: 100%;
     }
 
-    .view{
+    .view {
         margin-top: 75px;
     }
 </style>
