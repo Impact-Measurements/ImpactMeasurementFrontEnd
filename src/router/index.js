@@ -4,6 +4,7 @@ import HomeView from '../views/HomeView.vue'
 import AccountView from '../components/partials/account/AccountView.vue'
 import UploadView from '../components/partials/upload/UploadView.vue'
 import OrientationView from '../components/partials/orientation/OrientationView.vue'
+import SummaryView from '../components/partials/summary/SummaryView.vue'
 
 Vue.use(VueRouter)
 
@@ -27,6 +28,11 @@ const routes = [
         path: '/orientation',
         name: 'orientation',
         component: OrientationView
+    },
+    {
+        path: '/summary',
+        name: 'summary',
+        component: SummaryView
     }
 ]
 
