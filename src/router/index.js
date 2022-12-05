@@ -5,6 +5,7 @@ import AccountView from '../components/partials/account/AccountView.vue'
 import UploadView from '../components/partials/upload/UploadView.vue'
 import OrientationView from '../components/partials/orientation/OrientationView.vue'
 import SummaryView from '../components/partials/summary/SummaryView.vue'
+import ChooseTrainingView from '../components/partials/summary/ChooseTrainingView.vue'
 
 Vue.use(VueRouter)
 
@@ -30,9 +31,14 @@ const routes = [
         component: OrientationView
     },
     {
-        path: '/summary',
+        path: '/summary/:id',
         name: 'summary',
         component: SummaryView
+    },
+    {
+        path: '/choose',
+        name: 'choose',
+        component: ChooseTrainingView
     }
 ]
 

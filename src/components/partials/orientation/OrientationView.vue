@@ -7,13 +7,7 @@
     import Vue from 'vue'
     import * as THREE from 'three'
     import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-    //import TrackballControls from 'three-trackballcontrols'
-    //import {
-    //    BloomEffect,
-    //    EffectComposer,
-    //    EffectPass,
-    //    RenderPass
-    //} from 'postprocessing'
+    
     Vue.use(axios)
 
     export default {
@@ -39,7 +33,7 @@
 
             var color = new THREE.Color();
             color.setRGB(255, 250, 250);
-
+                        
             return {
                 scene: scene,
                 camera: camera,
@@ -63,8 +57,8 @@
             this.camera.position.x = 1
             this.camera.position.y = 1
             this.scene.background = new THREE.Color('grey')
-
             this.controls = new OrbitControls(this.camera, this.renderer.domElement)
+
         },
         mounted: function () {
             this.emitInterface();

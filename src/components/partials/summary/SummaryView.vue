@@ -123,12 +123,13 @@
                 highImpacts: null,
                 reveal: false,
                 sortMethod: "asc",
-                impactNum: null
+                impactNum: null,
+                id: parseInt(this.$route.params.id),
             }
         },
         mounted() {
             axios
-                .get('https://localhost:44301/api/trainingsession/1')
+                .get('https://localhost:44301/api/trainingsession/' + this.id)
                 .then(response => {
                     response.data.impacts.forEach(impact => this.impacts.push(impact))
                     response.data.impacts.forEach(element => this.frames.push(element.frame))
@@ -138,17 +139,16 @@
         },
         methods: {
             sortArrays() {
-                let sortedImpacts = this.impacts;
                 if (this.sortMethod == "asc") {
                     this.sortMethod = "desc";
-                    sortedImpacts = sortedImpacts.sort((a, b) => {
+                    this.impacts = this.impacts.sort((a, b) => {
                         return b.impactForce - a.impactForce
                     })
                 }
 
                 else if (this.sortMethod == "desc") {
                     this.sortMethod = "asc";
-                    sortedImpacts = sortedImpacts.sort((a, b) => {
+                    this.impacts = this.impacts.sort((a, b) => {
                         return a.impactForce - b.impactForce
                     })
                 }
