@@ -80,7 +80,6 @@
                 localStorage.setItem("valueX", (x.impactDirectionX / -1000).toString());
                 localStorage.setItem("valueY", (x.impactDirectionY / 1000).toString());
                 localStorage.setItem("valueZ", (x.impactDirectionZ / 1000).toString());
-                console.log(x)
                 this.animate()
             },
             emitInterface() {
@@ -91,7 +90,6 @@
         },
         watch: {
             impact(e) {
-                console.log(e[0])
                 this.getValuesFromAPI(e[0]);
             }
         },

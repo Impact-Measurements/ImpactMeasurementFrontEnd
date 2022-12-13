@@ -15,8 +15,13 @@
                             <hr /> 
                         </v-col>
                         <v-col>
-                            <h2>High impacts</h2>
-                            <hr /> 
+                            <v-row style="margin: 0px">
+                                <h2>High impact stats</h2>
+                                <v-btn tile color="success" v-on:click="time=17" style="margin-left: 80px" v-model="time">
+                                    View
+                                </v-btn>
+                            </v-row>
+                            <hr />
                         </v-col>
                     </v-row>
 
@@ -40,8 +45,8 @@
                                 </v-expand-transition>
                             </v-card>
                         </v-col>
-                        <v-col class="list">
-
+                        <v-col>
+                            <StatsView/>
                         </v-col>
                     </v-row>
                 </v-col>
@@ -61,7 +66,7 @@
 
             <v-row>
                 <v-col class="time">
-                    <vue-slider v-model="time" :data="frames" v-on:change="getValuesFromAPI" :marks="true"/>
+                    <vue-slider v-model="time" :data="frames" v-on:change="getValuesFromAPI" :marks="true" class="slider-time"/>
                 </v-col>
             </v-row>
         </v-container>
@@ -88,6 +93,11 @@
 
                         <v-slider v-model="highThreshold"
                                   max="1000"></v-slider>
+
+                        <v-btn color="success"
+                               dark
+                               @click.stop="drawer = !drawer"> Save
+                        </v-btn>
                     </v-container>
                 </v-list-item-content>
             </v-list-item>
@@ -97,6 +107,7 @@
 
 <script>
     import ChartView from './ChartView.vue';
+    import StatsView from './StatsView.vue';
     import OrientationView from '../orientation/OrientationView.vue';
     import VueSlider from 'vue-slider-component';
     import 'vue-slider-component/theme/antd.css';
@@ -111,6 +122,7 @@
             ChartView,
             OrientationView,
             VueSlider,
+            StatsView,
         },
         data() {
             return {
@@ -133,8 +145,10 @@
                 .then(response => {
                     response.data.impacts.forEach(impact => this.impacts.push(impact))
                     response.data.impacts.forEach(element => this.frames.push(element.frame))
-                    console.log(this.impacts)
-                    console.log(this.frames)
+
+                    this.impacts.impactForce = this.impacts.impactForce.map(function (each_num) {
+                        return Number(each_num.toFixed(2))
+                    });
                 })
         },
         methods: {
@@ -160,13 +174,16 @@
 
             getValuesFromAPI() {
                 this.$options.childInterface.getValuesFromAPI();
+            },
+
+            changeFrame() {
+                this.time = 17;
             }
 
         },
         watch: {
             time(e) {
                 this.impactNum = this.impacts.filter(c => c.frame == e)
-                console.log(this.impactNum)
             }
         },
         childInterface: {
@@ -187,13 +204,19 @@
     }
 
     .bottom {
-        max-height: 35%;
+        max-height: 40%;
         border: 1px solid;
+        height: 360px;
     }
 
     .time {
         max-height: 15%;
-        border: 1px solid;
+    }
+    .slider-time {
+        margin-left: 3.8%;
+        position: center;
+        top: 0;
+        margin-top: -55px;
     }
 
     .orientation{
