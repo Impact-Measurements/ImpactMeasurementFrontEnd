@@ -104,7 +104,6 @@
                     this.series = [{
                         data: this.shortData,
                     }];
-                    console.log(this.shortData)
                 })
         },
     }

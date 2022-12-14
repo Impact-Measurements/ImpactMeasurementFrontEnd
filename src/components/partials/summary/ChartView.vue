@@ -49,7 +49,10 @@ export default {
                     },
                     colors: ['#5AB55E'],
                     dataLabels: {
-                        enabled: false, //change after feedback
+                        enabled: false,
+                        formatter: function (val) {
+                            return val + " newton";
+                        },
                     },
                     stroke: {
                         curve: 'smooth'
@@ -64,12 +67,12 @@ export default {
                     grid: {
                         borderColor: '#e7e7e7',
                         row: {
-                            colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+                            colors: ['#f3f3f3', 'transparent'],
                             opacity: 0.5
                         },
                     },
                     markers: {
-                        size: 6, //change after feedback
+                        size: 6,
                         colors: ["FEFEFE"],
                     },
                     xaxis: {
@@ -110,7 +113,7 @@ export default {
             //this.series.data = [],
             //    this.chartOptions.xaxis.categories = [],
             axios
-                .get('https://localhost:44301/api/trainingsession/' + this.id)
+                .get('https://localhost:44301/api/impact/all/with_threshold/' + this.id)
                 .then(response => {
                     response.data.impacts.forEach(element => this.chartOptions.xaxis.categories.push(element.frame))
                     response.data.impacts.forEach(element2 => this.shortData.push(element2.impactForce))
@@ -122,7 +125,6 @@ export default {
                         data: this.shortData,
                         },
                     ];
-                    console.log(this.chartOptions.xaxis.categories)
             })
         }
 }

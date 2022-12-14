@@ -27,7 +27,7 @@
 
                     <v-row>
                         <v-col class="list">
-                            <v-card class="mx-auto" v-for="impact in impacts" :key="impact.id" style="margin-bottom: 5px;">
+                            <v-card class="mx-auto" v-for="impact in impacts" :key="impact.Count" style="margin-bottom: 5px;">
                                 <v-card-text @click="reveal = true">
                                     {{impact.impactForce}} <strong>N</strong>
                                 </v-card-text>
@@ -79,24 +79,18 @@
                 <v-list-item-content class="settings-content">
                     <h1>Settings</h1>
                     <v-container fluid>
-                        <v-text-field v-model="threshold"
-                                      label="Normal threshold: "
+                        <v-text-field v-model="thresholdForm.impactForce"
+                                      label="Threshold: "
                                       required></v-text-field>
 
-                        <v-slider v-model="threshold"
+                        <v-slider v-model="thresholdForm.impactForce"
                                   max="500"
                                   min="0"></v-slider>
-                        <hr />
-                        <v-text-field v-model="highThreshold"
-                                      label="High impacts threshold: "
-                                      required></v-text-field>
-
-                        <v-slider v-model="highThreshold"
-                                  max="1000"></v-slider>
 
                         <v-btn color="success"
                                dark
-                               @click.stop="drawer = !drawer"> Save
+                               @click.stop="drawer = !drawer"
+                               v-on:click="changeThreshold(), update()"> Save
                         </v-btn>
                     </v-container>
                 </v-list-item-content>
@@ -127,8 +121,6 @@
         data() {
             return {
                 drawer: null,
-                threshold: 50,
-                highThreshold: 50,
                 time: 0,
                 frames: [],
                 impacts: [],
@@ -137,19 +129,12 @@
                 sortMethod: "asc",
                 impactNum: null,
                 id: parseInt(this.$route.params.id),
-            }
-        },
-        mounted() {
-            axios
-                .get('https://localhost:44301/api/trainingsession/' + this.id)
-                .then(response => {
-                    response.data.impacts.forEach(impact => this.impacts.push(impact))
-                    response.data.impacts.forEach(element => this.frames.push(element.frame))
 
-                    this.impacts.impactForce = this.impacts.impactForce.map(function (each_num) {
-                        return Number(each_num.toFixed(2))
-                    });
-                })
+                thresholdForm: {
+                    userId: 0,
+                    impactForce: 0,
+                },
+            }
         },
         methods: {
             sortArrays() {
@@ -172,14 +157,51 @@
                 this.$options.childInterface = childInterface;
             },
 
-            getValuesFromAPI() {
+            async getValuesFromAPI() {
                 this.$options.childInterface.getValuesFromAPI();
             },
 
             changeFrame() {
                 this.time = 17;
+            },
+
+            changeThreshold() {
+                axios({
+                    method: 'put',
+                    url: 'https://localhost:44301/api/users/minimum/threshold',
+                    data: {
+                        userId: this.thresholdForm.userId,
+                        impactForce: this.thresholdForm.impactForce
+                    }
+                })
+            },
+
+            update() {
+                this.impacts = [],
+                this.frames = [],
+                    axios
+                        .get('https://localhost:44301/api/impact/all/with_threshold/' + this.id)
+                        .then(response => {
+                            response.data.impacts.forEach(impact => this.impacts.push(impact))
+                            response.data.impacts.forEach(element => this.frames.push(element.frame))
+                            this.thresholdForm.userId = response.data.userId
+
+                            this.time = this.impacts[0].frame
+                        })
             }
 
+        },
+        mounted() {
+            axios
+                .get('https://localhost:44301/api/impact/all/with_threshold/' + this.id)
+                .then(response => {
+                    response.data.impacts.forEach(impact => this.impacts.push(impact))
+                    response.data.impacts.forEach(element => this.frames.push(element.frame))
+                    this.thresholdForm.userId = response.data.userId
+
+                    this.time = this.impacts[0].frame
+                    console.log(this.thresholdForm.userId);
+                })
         },
         watch: {
             time(e) {
