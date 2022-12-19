@@ -16,9 +16,9 @@
                         </v-col>
                         <v-col>
                             <v-row style="margin: 0px">
-                                <h2>High impact stats</h2>
-                                <v-btn tile color="success" v-on:click="time=17" style="margin-left: 80px" v-model="time">
-                                    View
+                                <h2>Impact stats</h2>
+                                <v-btn tile color="success" v-on:click="swapComponent('view-02')" type="submit" style="margin-left: 10px" v-model="time">
+                                    View Highest impact
                                 </v-btn>
                             </v-row>
                             <hr />
@@ -53,7 +53,7 @@
 
                 <v-col col cols="7" class="right">
                     <img src="./settings.png" alt="Settings" class="settings" @click.stop="drawer = !drawer" />
-                    <OrientationView class="orientation" v-bind:impact="this.impactNum" @interface="getChildInterface"/>
+                    <div :is="currentComponent" :swap-component="swapComponent" class="orientation" v-bind:impact="this.impactNum" @interface="getChildInterface"></div>
                 </v-col>
 
             </v-row>
@@ -90,7 +90,8 @@
                         <v-btn color="success"
                                dark
                                @click.stop="drawer = !drawer"
-                               v-on:click="changeThreshold(), update()"> Save
+                               v-on:click="changeThreshold(), update()"
+                               type="submit"> Save
                         </v-btn>
                     </v-container>
                 </v-list-item-content>
@@ -103,6 +104,7 @@
     import ChartView from './ChartView.vue';
     import StatsView from './StatsView.vue';
     import OrientationView from '../orientation/OrientationView.vue';
+    import BarStatsView from './BarStatsView.vue'
     import VueSlider from 'vue-slider-component';
     import 'vue-slider-component/theme/antd.css';
 
@@ -114,9 +116,10 @@
         name: 'SummaryView',
         components: {
             ChartView,
-            OrientationView,
             VueSlider,
             StatsView,
+            'view-01': OrientationView,
+            'view-02': BarStatsView,
         },
         data() {
             return {
@@ -129,6 +132,8 @@
                 sortMethod: "asc",
                 impactNum: null,
                 id: parseInt(this.$route.params.id),
+                switch: true,
+                currentComponent: 'view-01',
 
                 thresholdForm: {
                     userId: 0,
@@ -178,7 +183,7 @@
 
             update() {
                 this.impacts = [],
-                this.frames = [],
+                    this.frames = [],
                     axios
                         .get('https://localhost:44301/api/impact/all/with_threshold/' + this.id)
                         .then(response => {
@@ -188,6 +193,10 @@
 
                             this.time = this.impacts[0].frame
                         })
+            },
+
+            swapComponent: function (component) {
+                this.currentComponent = component;
             }
 
         },
