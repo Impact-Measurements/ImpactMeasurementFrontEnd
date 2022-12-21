@@ -1,4 +1,5 @@
 # impact-measurement-frontend
+To see all the api calls and npm packeges please refer to the src folder.
 
 ## Project setup
 ```
