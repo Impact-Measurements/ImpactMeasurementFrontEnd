@@ -17,7 +17,7 @@
                         <v-col>
                             <v-row style="margin: 0px">
                                 <h2>Impact stats</h2>
-                                <v-btn tile color="success" v-on:click="swapComponent('view-02')" type="submit" style="margin-left: 10px" v-model="time">
+                                <v-btn tile color="success" v-on:click="getHighestImpact" type="submit" style="margin-left: 10px" v-model="time">
                                     View Highest impact
                                 </v-btn>
                             </v-row>
@@ -27,7 +27,7 @@
 
                     <v-row>
                         <v-col class="list">
-                            <v-card class="mx-auto" v-for="impact in impacts" :key="impact.Count" style="margin-bottom: 5px;">
+                            <v-card class="mx-auto" v-for="impact in impacts" :key="impact.Count" style="margin-bottom: 5px;"  v-if="renderComponent" >
                                 <v-card-text @click="reveal = true">
                                     {{impact.impactForce}} <strong>N</strong>
                                 </v-card-text>
@@ -53,20 +53,20 @@
 
                 <v-col col cols="7" class="right">
                     <img src="./settings.png" alt="Settings" class="settings" @click.stop="drawer = !drawer" />
-                    <div :is="currentComponent" :swap-component="swapComponent" class="orientation" v-bind:impact="this.impactNum" @interface="getChildInterface"></div>
+                    <div :is="currentComponent" :swap-component="swapComponent" class="orientation" v-bind:impact="this.impactNum" @interface="getChildInterface"  v-if="renderComponent" ></div>
                 </v-col>
 
             </v-row>
 
             <v-row>
                 <v-col class="bottom">
-                    <ChartView />
+                    <ChartView v-if="renderComponent"/>
                 </v-col>
             </v-row>
 
             <v-row>
                 <v-col class="time">
-                    <vue-slider v-model="time" :data="frames" v-on:change="getValuesFromAPI" :marks="true" class="slider-time"/>
+                    <vue-slider v-model="time" :data="frames" v-on:change="getValuesFromAPI" :marks="false" class="slider-time" :tooltip="'none'" :disabled="this.slider"/>
                 </v-col>
             </v-row>
         </v-container>
@@ -86,12 +86,23 @@
                         <v-slider v-model="thresholdForm.impactForce"
                                   max="500"
                                   min="0"></v-slider>
+                        <br />
+                        <v-btn tile color="success" v-on:click="swapComponent('view-01'), slider=false" type="submit" style="margin-bottom: 10px" v-if="slider">
+                            Show 3D direction
+                        </v-btn>
+
+                        <v-btn tile color="success" v-on:click="swapComponent('view-02'), slider=true" type="submit" style="margin-bottom: 10px" v-else>
+                            Show column data
+                        </v-btn>
+                        <br />
+                        <hr style="margin-bottom: 10px;" />
 
                         <v-btn color="success"
                                dark
                                @click.stop="drawer = !drawer"
                                v-on:click="changeThreshold(), update()"
-                               type="submit"> Save
+                               type="submit">
+                            Save
                         </v-btn>
                     </v-container>
                 </v-list-item-content>
@@ -127,13 +138,14 @@
                 time: 0,
                 frames: [],
                 impacts: [],
-                highImpacts: null,
                 reveal: false,
                 sortMethod: "asc",
                 impactNum: null,
                 id: parseInt(this.$route.params.id),
                 switch: true,
                 currentComponent: 'view-01',
+                renderComponent: true,
+                slider: false,
 
                 thresholdForm: {
                     userId: 0,
@@ -163,7 +175,7 @@
             },
 
             async getValuesFromAPI() {
-                this.$options.childInterface.getValuesFromAPI();
+                await this.$options.childInterface.getValuesFromAPI();
             },
 
             changeFrame() {
@@ -171,6 +183,7 @@
             },
 
             changeThreshold() {
+                localStorage.setItem("threshold", this.thresholdForm.impactForce.toString());
                 axios({
                     method: 'put',
                     url: 'https://localhost:44301/api/users/minimum/threshold',
@@ -192,13 +205,28 @@
                             this.thresholdForm.userId = response.data.userId
 
                             this.time = this.impacts[0].frame
+                            this.forceRerender()
                         })
             },
 
             swapComponent: function (component) {
                 this.currentComponent = component;
-            }
+            },
 
+            forceRerender() {
+                this.renderComponent = false;
+
+                this.$nextTick(() => {
+                    this.renderComponent = true;
+                });
+            },
+
+            getHighestImpact() 
+            {
+                this.time = this.impacts.sort((a, b) => {
+                    return (b.impactForce - a.impactForce)
+                })[0].frame
+            }
         },
         mounted() {
             axios
@@ -209,7 +237,7 @@
                     this.thresholdForm.userId = response.data.userId
 
                     this.time = this.impacts[0].frame
-                    console.log(this.thresholdForm.userId);
+                    this.getValuesFromAPI();
                 })
         },
         watch: {

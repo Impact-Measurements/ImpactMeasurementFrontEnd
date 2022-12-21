@@ -64,6 +64,7 @@
             this.emitInterface();
             this.$refs.canvas.appendChild(this.renderer.domElement)
             this.getValuesFromAPI()
+            this.animate()
         },
         methods: {
             animate: function () {
@@ -82,9 +83,9 @@
                 localStorage.setItem("valueZ", (x.impactDirectionZ / 1000).toString());
                 this.animate()
             },
-            emitInterface() {
+            emitInterface(e) {
                 this.$emit("interface", {
-                    getValuesFromAPI: () => this.getValuesFromAPI()
+                    getValuesFromAPI: () => this.getValuesFromAPI(e[0])
                 });
             },
         },

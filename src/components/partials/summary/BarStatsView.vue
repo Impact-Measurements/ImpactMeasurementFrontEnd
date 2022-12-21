@@ -1,26 +1,41 @@
 <template>
     <div>
-        <apexchart type="bar" height="350" :options="chartOptions" :series="series" class="bars" ></apexchart>
+        <apexchart type="bar" height="350" :options="chartOptions" :series="series" class="bars"></apexchart>
     </div>
 </template>
 
 <script>
-    //import VueApexCharts from 'vue-apexcharts'
+    import axios from 'axios'
+    import Vue from 'vue'
+    import VueApexCharts from 'vue-apexcharts'
+
+    Vue.use(axios)
     export default {
         name: 'BarStatsView',
         components: {
-            //VueApexCharts
+            apexchart: VueApexCharts,
         },
         data() {
             return {
+                shortData: [],
+                shortX: [],
+                serial: 0,
+                id: parseInt(this.$route.params.id),
+
                 series: [{
                     name: 'Impact',
-                    data: [257, 186, 224, 293]
+                    data: []
                 }],
                 chartOptions: {
                     chart: {
                         type: 'bar',
-                        height: 350
+                        height: 350,
+                        toolbar: {
+                            show: true
+                        },
+                        zoom: {
+                            enabled: false
+                        }
                     },
                     plotOptions: {
                         bar: {
@@ -39,11 +54,15 @@
                         colors: ['transparent']
                     },
                     xaxis: {
-                        categories: ['1', '2', '3', '4'],
+                        categories: [],
+                        type: 'numeric',
+                        tickPlacement: 'on',
+                        tickAmount: 'dataPoints',
+                        decimalsInFloat: 0,
                     },
                     yaxis: {
                         title: {
-                            text: '$ (Newton)'
+                            text: 'Newton'
                         }
                     },
                     fill: {
@@ -59,7 +78,7 @@
                     annotations: {
                         yaxis: [
                             {
-                                y: 200,
+                                y: JSON.parse(localStorage.getItem("threshold")),
                                 borderColor: "#FF0000",
                                 label: {
                                     borderColor: "#FF0000",
@@ -70,12 +89,28 @@
                                     text: "Threshold"
                                 }
                             }],
-                    },
-                    toolbar: {
-                        show: false
-                    },
+                    }
                 }
             }
+        },
+        mounted() {
+            axios
+                .get('https://localhost:44301/api/impact/all/' + this.id)
+                .then(response => {
+                    response.data.forEach(element => this.shortData.push(element.impactForce))
+                    this.shortData = this.shortData.map(function (each_num) {
+                        return Number(each_num.toFixed(2))
+                    });
+                    this.updateChart()
+                })
+        },
+        methods: {
+            updateChart() {
+                this.series = [{
+                    data: this.shortData,
+                },
+                ];
+            },
         }
     }
 </script>
