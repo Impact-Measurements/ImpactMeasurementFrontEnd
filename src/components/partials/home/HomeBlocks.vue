@@ -20,7 +20,7 @@
                 </div>
 
                 <div class="blocks">
-                    <a href="/orientation">
+                    <a href="/choose">
                         <v-img max-height="275"
                                max-width="275"
                                class="image"

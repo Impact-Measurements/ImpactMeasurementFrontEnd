@@ -1,4 +1,5 @@
 # impact-measurement-frontend
+To see all the api calls and npm packages please refer to the src folder.
 
 ## Project setup
 ```
@@ -19,6 +20,3 @@ npm run build
 ```
 npm run lint
 ```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
