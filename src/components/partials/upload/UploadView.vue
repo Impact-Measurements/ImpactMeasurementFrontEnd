@@ -7,12 +7,14 @@
                         <v-toolbar dark color="green">
                             <v-toolbar-title>Upload training</v-toolbar-title>
                         </v-toolbar>
-                        <v-text-field v-model="title"
-                                      :counter="10"
+                        <!--<v-text-field v-model="title"
+                                      :counter="20"
                                       label="Training name"
                                       required
                                       @input="$v.name.$touch()"
-                                      @blur="$v.name.$touch()"></v-text-field>
+                                      @blur="$v.name.$touch()"></v-text-field>-->
+                        <v-slider v-model="form.pain" thumb-label="always" label="Pain endured: " min="0" max="10" style="margin-bottom: 1vh; margin-top: 2vh;"></v-slider>
+                        <v-slider v-model="form.effect" thumb-label="always" label="Effectiveness: " min="0" max="10"> </v-slider>
                         <v-file-input label="file"
                                       accept=".csv"
                                       id="file"
@@ -36,7 +38,11 @@
         data() {
             return {
                 file: '',
-                title: ''
+                form: {
+                    pain: null,
+                    effect: null,
+                    userid: 1
+                }
             }
         },
 
@@ -45,7 +51,7 @@
                 let formData = new FormData();
                 formData.append('file', this.file);
 
-                axios.post('https://localhost:44301/api/File/postTrainging',
+                axios.post('https://localhost:44301/api/File/postTrainging?' + JSON.stringify(this.form),
                     formData,
                     {
                         headers: {
