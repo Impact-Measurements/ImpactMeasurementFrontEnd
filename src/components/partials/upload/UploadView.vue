@@ -13,8 +13,8 @@
                                       required
                                       @input="$v.name.$touch()"
                                       @blur="$v.name.$touch()"></v-text-field>-->
-                        <v-slider v-model="form.pain" thumb-label="always" label="Pain endured: " min="0" max="10" style="margin-bottom: 1vh; margin-top: 2vh;"></v-slider>
-                        <v-slider v-model="form.effect" thumb-label="always" label="Effectiveness: " min="0" max="10"> </v-slider>
+                        <v-slider v-model="form.Pain" thumb-label="always" label="Pain endured: " min="0" max="10" style="margin-bottom: 1vh; margin-top: 2vh;"></v-slider>
+                        <v-slider v-model="form.Effect" thumb-label="always" label="Effectiveness: " min="0" max="10"> </v-slider>
                         <v-file-input label="file"
                                       accept=".csv"
                                       id="file"
@@ -39,15 +39,16 @@
             return {
                 file: '',
                 form: {
-                    pain: null,
-                    effect: null,
-                    userid: 1
+                    UserId: 1,
+                    Effect: null,
+                    Pain: null
                 }
             }
         },
 
         methods: {
             submitFile() {
+                console.log(JSON.stringify(this.form))
                 let formData = new FormData();
                 formData.append('file', this.file);
 
