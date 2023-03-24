@@ -186,7 +186,7 @@
                 localStorage.setItem("threshold", this.thresholdForm.impactForce.toString());
                 axios({
                     method: 'put',
-                    url: 'https://localhost:44301/api/users/minimum/threshold',
+                    url: 'http://localhost:44301/api/users/minimum/threshold',
                     data: {
                         userId: this.thresholdForm.userId,
                         impactForce: this.thresholdForm.impactForce
@@ -198,7 +198,7 @@
                 this.impacts = [],
                     this.frames = [],
                     axios
-                        .get('https://localhost:44301/api/impact/all/with_threshold/' + this.id)
+                        .get('http://localhost:44301/api/impact/all/with_threshold/' + this.id)
                         .then(response => {
                             response.data.impacts.forEach(impact => this.impacts.push(impact))
                             response.data.impacts.forEach(element => this.frames.push(element.frame))
@@ -230,7 +230,7 @@
         },
         mounted() {
             axios
-                .get('https://localhost:44301/api/impact/all/with_threshold/' + this.id)
+                .get('http://localhost:44301/api/impact/all/with_threshold/' + this.id)
                 .then(response => {
                     response.data.impacts.forEach(impact => this.impacts.push(impact))
                     response.data.impacts.forEach(element => this.frames.push(element.frame))

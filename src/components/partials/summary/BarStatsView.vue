@@ -95,7 +95,7 @@
         },
         mounted() {
             axios
-                .get('https://localhost:44301/api/impact/all/' + this.id)
+                .get('http://localhost:44301/api/impact/all/' + this.id)
                 .then(response => {
                     response.data.forEach(element => this.shortData.push(element.impactForce))
                     this.shortData = this.shortData.map(function (each_num) {

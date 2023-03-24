@@ -113,7 +113,7 @@ export default {
             //this.series.data = [],
             //    this.chartOptions.xaxis.categories = [],
             axios
-                .get('https://localhost:44301/api/impact/all/with_threshold/' + this.id)
+                .get('http://localhost:44301/api/impact/all/with_threshold/' + this.id)
                 .then(response => {
                     response.data.impacts.forEach(element => this.chartOptions.xaxis.categories.push(element.frame))
                     response.data.impacts.forEach(element2 => this.shortData.push(element2.impactForce))

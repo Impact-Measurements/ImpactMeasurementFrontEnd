@@ -86,7 +86,7 @@
         },
         mounted() {
             axios
-                .get('https://localhost:44301/api/impact/average/' + this.id)
+                .get('http://localhost:44301/api/impact/average/' + this.id)
                 .then(response => {
                 this.average = response.data
                     
@@ -94,7 +94,7 @@
                     this.shortData.push(this.average)
             }),
             axios
-            .get('https://localhost:44301/api/impact/highest/' + this.id)
+            .get('http://localhost:44301/api/impact/highest/' + this.id)
                 .then(responseHighest => {
                     this.highest = responseHighest.data.impactForce
 

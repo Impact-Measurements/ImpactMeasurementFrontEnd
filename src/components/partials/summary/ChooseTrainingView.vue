@@ -54,7 +54,7 @@
         },
         mounted() {
             axios
-                .get('https://localhost:44301/api/trainingsession/all')
+                .get('http://localhost:44301/api/trainingsession/all')
                 .then(response => {
                     this.traininglist = response.data
                     console.log(response.data)
