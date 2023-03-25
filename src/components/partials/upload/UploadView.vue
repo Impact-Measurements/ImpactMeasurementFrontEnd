@@ -59,7 +59,7 @@
                 let formData = new FormData();
                 formData.append('file', this.file);
 
-                axios.post('http://localhost:44301/api/File/postTrainging' + JSON.stringify(this.form),
+                axios.post('http://localhost:44301/api/File/postTrainging?' + JSON.stringify(this.form),
                     formData,
                     {
                         headers: {
@@ -68,7 +68,7 @@
                     }
                 ).then(function () {
                     console.log('SUCCESS!!');
-                    ;
+                    
                 })
                     .catch(function () {
                         console.log('FAILURE!!');
